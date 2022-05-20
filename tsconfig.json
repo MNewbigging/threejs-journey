@@ -12,7 +12,8 @@
     "preserveConstEnums": true,
     "experimentalDecorators": true,
     "typeRoots": ["node_modules/@types"],
-    "lib": ["dom", "es5", "es6"]
+    "lib": ["dom", "es5", "es6"],
+    "types": ["webpack-env"]
   },
   "include": ["./src/**/*", "prettier.config.js", "custom.d.ts"]
 }

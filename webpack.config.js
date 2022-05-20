@@ -15,6 +15,13 @@ module.exports = {
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
   },
+  devServer: {
+    static: './dist',
+    hot: true,
+  },
+  optimization: {
+    runtimeChunk: 'single',
+  },
   module: {
     rules: [
       {
@@ -36,17 +43,15 @@ module.exports = {
       {
         test: /\.(glb|gltf)$/,
         //use: 'file-loader?name=[name].[ext]&outputPath=./assets/models',
-        use:
-        [
-            {
-                loader: 'file-loader',
-                options:
-                {
-                  esModule: false,
-                  outputPath: 'assets/models/'
-                }
-            }
-        ]
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              esModule: false,
+              outputPath: 'assets/models/',
+            },
+          },
+        ],
       },
     ],
   },

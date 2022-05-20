@@ -11,3 +11,7 @@ const appState = new AppState();
 const root = createRoot(document.getElementById('app-root'));
 
 root.render(<App appState={appState} />);
+
+if (module.hot) {
+  module.hot.accept();
+}
