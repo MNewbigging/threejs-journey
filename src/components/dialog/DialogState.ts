@@ -10,7 +10,6 @@ export enum DialogStage {
 export class DialogState {
   public id = RandomId.createId();
   public stage = DialogStage.CLOSED;
-  public title = '';
 
   constructor() {
     makeObservable(this, {
