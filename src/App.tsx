@@ -10,5 +10,5 @@ interface AppProps {
 }
 
 export const App: React.FC<AppProps> = observer(({ appState }) => {
-  return <></>;
+  return <canvas id='main-canvas'></canvas>;
 });
