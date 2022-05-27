@@ -3,6 +3,8 @@ import { FontLoader } from 'three/examples/jsm/loaders/FontLoader';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry';
 
+import Font from '../../assets/fonts/helvetiker_regular.typeface.json';
+
 import { BaseScene } from '../BaseScene';
 
 export class TextScene extends BaseScene {
@@ -21,7 +23,8 @@ export class TextScene extends BaseScene {
 
     // Load font
     const fontLoader = new FontLoader();
-    fontLoader.load('/src/assets/fonts/helvetiker_regular.typeface.json', (font) => {
+    const font = `${Font}`;
+    fontLoader.load('/assets/helvetiker_regular.typeface.json', (font) => {
       console.log('font loaded', font);
 
       const textGeom = new TextGeometry('Hello world', {
@@ -49,7 +52,9 @@ export class TextScene extends BaseScene {
     });
   }
 
-  public updateScene(deltaTime: number) {}
+  public updateScene(deltaTime: number) {
+    this.controls.update();
+  }
 
   public destroyScene() {}
 

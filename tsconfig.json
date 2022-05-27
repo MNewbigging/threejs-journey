@@ -13,7 +13,8 @@
     "experimentalDecorators": true,
     "typeRoots": ["node_modules/@types"],
     "lib": ["dom", "es5", "es6", "es2017"],
-    "types": ["webpack-env"]
+    "types": ["webpack-env"],
+    "resolveJsonModule": true
   },
   "include": ["./src/**/*", "prettier.config.js", "custom.d.ts"]
 }
