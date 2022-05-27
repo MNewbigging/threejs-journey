@@ -5,9 +5,11 @@ import { CanvasListener } from './utils/CanvasListener';
 import { Renderer } from './core/Renderer';
 import { BaseScene } from './scenes/BaseScene';
 import { SceneName } from './scenes/SceneList';
+import { DrawerState } from './components/drawer/DrawerState';
 
 export class AppState {
   public activeSceneName: SceneName;
+  public drawerState = new DrawerState();
 
   private canvasListener: CanvasListener;
   private renderer: Renderer;
@@ -39,6 +41,10 @@ export class AppState {
     } else {
       document.exitFullscreen();
     }
+  };
+
+  public selectScene = (sceneName: SceneName) => {
+    //
   };
 
   private update = () => {

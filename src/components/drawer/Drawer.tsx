@@ -6,7 +6,6 @@ import { DrawerState } from './DrawerState';
 import { Dialog } from '../dialog/Dialog';
 import { SceneInfoRenderer } from '../scene-info/SceneInfoRenderer';
 import { SceneName, sceneNames } from '../../scenes/SceneList';
-import { SceneList } from './SceneList';
 
 interface DrawerProps {
   drawerState: DrawerState;
