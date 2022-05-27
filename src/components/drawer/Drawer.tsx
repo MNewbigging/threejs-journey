@@ -51,7 +51,7 @@ export const Drawer: React.FC<DrawerProps> = observer(
               </div>
               <div
                 className={'drawer-button info ' + drawerState.stage}
-                onClick={drawerState.toggleSceneInfo}
+                onClick={drawerState.showSceneInfo}
               >
                 i
               </div>

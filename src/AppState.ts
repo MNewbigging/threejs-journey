@@ -9,13 +9,20 @@ import { DrawerState } from './components/drawer/DrawerState';
 import { BasicTransfoms } from './scenes/basic-transforms/BasicTransformsScene';
 
 export class AppState {
-  public activeSceneName: SceneName;
+  public activeSceneName = SceneName.BASIC_TRANSFORMS;
   public drawerState = new DrawerState();
 
   private canvasListener: CanvasListener;
   private renderer: Renderer;
   private masterClock = new THREE.Clock();
   private activeScene?: BaseScene;
+
+  constructor() {
+    makeObservable(this, {
+      activeSceneName: observable,
+      selectScene: action,
+    });
+  }
 
   public setup() {
     // Setup screen listener

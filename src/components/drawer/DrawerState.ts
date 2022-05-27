@@ -8,15 +8,12 @@ export enum DrawerStage {
 
 export class DrawerState {
   public stage = DrawerStage.OPEN;
-  public showInfo = false;
   public dialogState = new DialogState();
 
   constructor() {
     makeObservable(this, {
       stage: observable,
       toggleDrawer: action,
-      showInfo: observable,
-      toggleSceneInfo: action,
     });
   }
 
@@ -28,7 +25,7 @@ export class DrawerState {
     this.stage = this.stage === DrawerStage.OPEN ? DrawerStage.CLOSED : DrawerStage.OPEN;
   };
 
-  public toggleSceneInfo = () => {
-    this.showInfo = !this.showInfo;
+  public showSceneInfo = () => {
+    this.dialogState.open();
   };
 }

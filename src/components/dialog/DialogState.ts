@@ -23,13 +23,13 @@ export class DialogState {
   public open() {
     this.stage = DialogStage.OPEN;
 
-    window.addEventListener('click', this.onWindowClick);
+    //window.addEventListener('click', this.onWindowClick);
   }
 
   public close() {
     this.stage = DialogStage.CLOSING;
 
-    window.removeEventListener('click', this.onWindowClick);
+    //window.removeEventListener('click', this.onWindowClick);
 
     // Close after delay to allow transition to finish
     setTimeout(this.removeDialog, 250);
