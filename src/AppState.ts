@@ -3,11 +3,16 @@ import { action, makeObservable, observable } from 'mobx';
 
 import { CanvasListener } from './utils/CanvasListener';
 import { Renderer } from './core/Renderer';
+import { BaseScene } from './scenes/BaseScene';
+import { SceneName } from './scenes/SceneList';
 
 export class AppState {
+  public activeSceneName: SceneName;
+
   private canvasListener: CanvasListener;
   private renderer: Renderer;
   private masterClock = new THREE.Clock();
+  private activeScene?: BaseScene;
 
   public setup() {
     // Setup screen listener

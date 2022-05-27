@@ -6,7 +6,7 @@ export abstract class BaseScene {
   public scene: THREE.Scene;
 
   constructor(protected canvasListener: CanvasListener) {
-    this.canvasListener.addCanvasListener(() => this.onCanvasResize());
+    this.canvasListener.onResize(() => this.onCanvasResize());
   }
 
   public abstract get camera(): THREE.Camera;
