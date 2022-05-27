@@ -7,6 +7,12 @@ import { BaseScene } from './scenes/BaseScene';
 import { SceneName } from './scenes/SceneList';
 import { DrawerState } from './components/drawer/DrawerState';
 import { BasicTransfoms } from './scenes/basic-transforms/BasicTransformsScene';
+import { BufferGeometryScene } from './scenes/buffer-geometry/BufferGeometryScene';
+import { BasicOrbitCamScene } from './scenes/basic-orbit-cam/BasicOrbitCamScene';
+import { BasicTextureScene } from './scenes/basic-texture/BasicTextureScene';
+import { MaterialsScene } from './scenes/materials/MaterialsScene';
+import { StandardOrbitCamScene } from './scenes/standard-orbit-cam/StandardOrbitCamScene';
+import { TextScene } from './scenes/text/TextScene';
 
 export class AppState {
   public activeSceneName = SceneName.BASIC_TRANSFORMS;
@@ -63,22 +69,22 @@ export class AppState {
         this.activeScene = new BasicTransfoms(this.canvasListener);
         break;
       case SceneName.BASIC_ORBIT_CAM:
-        //this.activeScene = new BasicOrbitCamScene(this.canvasListener);
+        this.activeScene = new BasicOrbitCamScene(this.canvasListener);
         break;
       case SceneName.STANDARD_ORBIT_CAM:
-        //this.activeScene = new StandardOrbitCamScene(this.canvasListener);
+        this.activeScene = new StandardOrbitCamScene(this.canvasListener);
         break;
       case SceneName.BUFFER_GEOMETRY:
-        //this.activeScene = new BufferGeometryScene(this.canvasListener);
+        this.activeScene = new BufferGeometryScene(this.canvasListener);
         break;
       case SceneName.BASIC_TEXTURE:
-        //this.activeScene = new BasicTextureScene(this.canvasListener);
+        this.activeScene = new BasicTextureScene(this.canvasListener);
         break;
       case SceneName.MATERIALS:
-        //this.activeScene = new MaterialsScene(this.canvasListener);
+        this.activeScene = new MaterialsScene(this.canvasListener);
         break;
       case SceneName.TEXT:
-        //this.activeScene = new TextScene(this.canvasListener);
+        this.activeScene = new TextScene(this.canvasListener);
         break;
     }
 
