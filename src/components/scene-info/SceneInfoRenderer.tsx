@@ -1,11 +1,12 @@
 import React from 'react';
+import { BasicTransformsInfo } from '../../scenes/basic-transforms/BasicTransformsInfo';
 import { SceneName } from '../../scenes/SceneList';
 
 export class SceneInfoRenderer {
   public static renderSceneInfo(sceneName: SceneName) {
     switch (sceneName) {
       case SceneName.BASIC_TRANSFORMS:
-      //return <BasicTransformsInfo />;
+        return <BasicTransformsInfo />;
       case SceneName.BASIC_ORBIT_CAM:
       //return <BasicOrbitCamInfo />;
       case SceneName.STANDARD_ORBIT_CAM:

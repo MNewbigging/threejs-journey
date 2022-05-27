@@ -1,3 +1,4 @@
+import { action, makeObservable, observable } from 'mobx';
 import { DialogState } from '../dialog/DialogState';
 
 export enum DrawerStage {
@@ -8,8 +9,16 @@ export enum DrawerStage {
 export class DrawerState {
   public stage = DrawerStage.OPEN;
   public showInfo = false;
-
   public dialogState = new DialogState();
+
+  constructor() {
+    makeObservable(this, {
+      stage: observable,
+      toggleDrawer: action,
+      showInfo: observable,
+      toggleSceneInfo: action,
+    });
+  }
 
   public getToggleText() {
     return this.stage === DrawerStage.OPEN ? '<' : '>';

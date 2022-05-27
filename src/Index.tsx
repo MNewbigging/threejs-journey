@@ -12,7 +12,8 @@ const root = createRoot(document.getElementById('app-root'));
 
 root.render(<App appState={appState} />);
 
-appState.setup();
+// Allow time for canvas to render to DOM before accessing it
+setTimeout(() => appState.setup(), 250);
 
 if (module.hot) {
   module.hot.accept();

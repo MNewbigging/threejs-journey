@@ -6,6 +6,7 @@ import { Renderer } from './core/Renderer';
 import { BaseScene } from './scenes/BaseScene';
 import { SceneName } from './scenes/SceneList';
 import { DrawerState } from './components/drawer/DrawerState';
+import { BasicTransfoms } from './scenes/basic-transforms/BasicTransformsScene';
 
 export class AppState {
   public activeSceneName: SceneName;
@@ -29,8 +30,10 @@ export class AppState {
     this.renderer = new Renderer(this.canvasListener);
 
     // Load initial scene
+    this.selectScene(SceneName.BASIC_TRANSFORMS);
 
     // Start render loop
+    this.update();
   }
 
   public toggleFullScreen = () => {
@@ -44,12 +47,47 @@ export class AppState {
   };
 
   public selectScene = (sceneName: SceneName) => {
-    //
+    // Clean up current scene
+    this.activeScene?.destroyScene();
+
+    // Load up new scene
+    switch (sceneName) {
+      case SceneName.BASIC_TRANSFORMS:
+        this.activeScene = new BasicTransfoms(this.canvasListener);
+        break;
+      case SceneName.BASIC_ORBIT_CAM:
+        //this.activeScene = new BasicOrbitCamScene(this.canvasListener);
+        break;
+      case SceneName.STANDARD_ORBIT_CAM:
+        //this.activeScene = new StandardOrbitCamScene(this.canvasListener);
+        break;
+      case SceneName.BUFFER_GEOMETRY:
+        //this.activeScene = new BufferGeometryScene(this.canvasListener);
+        break;
+      case SceneName.BASIC_TEXTURE:
+        //this.activeScene = new BasicTextureScene(this.canvasListener);
+        break;
+      case SceneName.MATERIALS:
+        //this.activeScene = new MaterialsScene(this.canvasListener);
+        break;
+      case SceneName.TEXT:
+        //this.activeScene = new TextScene(this.canvasListener);
+        break;
+    }
+
+    // Initialise newly active scene
+    this.activeScene.initScene();
+
+    this.activeSceneName = sceneName;
   };
 
   private update = () => {
     requestAnimationFrame(this.update);
 
     const deltaTime = this.masterClock.getDelta();
+
+    this.activeScene.updateScene(deltaTime);
+
+    this.renderer.render(this.activeScene.scene, this.activeScene.camera);
   };
 }
