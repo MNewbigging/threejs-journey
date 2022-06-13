@@ -13,6 +13,7 @@ import { BasicTextureScene } from './scenes/basic-texture/BasicTextureScene';
 import { MaterialsScene } from './scenes/materials/MaterialsScene';
 import { StandardOrbitCamScene } from './scenes/standard-orbit-cam/StandardOrbitCamScene';
 import { TextScene } from './scenes/text/TextScene';
+import { CannonPhysicsScene } from './scenes/cannon-physics/CannonPhysicsScene';
 
 export class AppState {
   public activeSceneName = SceneName.BASIC_TRANSFORMS;
@@ -43,7 +44,7 @@ export class AppState {
     this.renderer = new Renderer(this.canvasListener);
 
     // Load initial scene
-    this.selectScene(SceneName.BASIC_TRANSFORMS);
+    this.selectScene(SceneName.CANNON_PHYSICS);
 
     // Start render loop
     this.update();
@@ -85,6 +86,9 @@ export class AppState {
         break;
       case SceneName.TEXT:
         this.activeScene = new TextScene(this.canvasListener);
+        break;
+      case SceneName.CANNON_PHYSICS:
+        this.activeScene = new CannonPhysicsScene(this.canvasListener);
         break;
     }
 
