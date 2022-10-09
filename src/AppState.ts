@@ -44,7 +44,7 @@ export class AppState {
     this.renderer = new Renderer(this.canvasListener);
 
     // Load initial scene
-    this.selectScene(SceneName.CANNON_PHYSICS);
+    this.selectScene(SceneName.BASIC_TEXTURE);
 
     // Start render loop
     this.update();

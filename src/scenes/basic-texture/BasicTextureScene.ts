@@ -17,7 +17,7 @@ export class BasicTextureScene extends BaseScene {
   }
 
   public initScene() {
-    const scene = new THREE.Scene();
+    this.scene = new THREE.Scene();
 
     // Setup camera
     const camera = new THREE.PerspectiveCamera(
@@ -54,7 +54,7 @@ export class BasicTextureScene extends BaseScene {
     const doorMesh = new THREE.Mesh(boxGeom, doorMat);
     doorMesh.position.z = -1;
     this.meshes.push(doorMesh);
-    scene.add(doorMesh);
+    this.scene.add(doorMesh);
 
     minecraft.generateMipmaps = false;
     minecraft.minFilter = THREE.NearestFilter;
@@ -64,9 +64,7 @@ export class BasicTextureScene extends BaseScene {
     const mcMesh = new THREE.Mesh(boxGeom, mcMat);
     mcMesh.position.z = 1;
     this.meshes.push(mcMesh);
-    scene.add(mcMesh);
-
-    this.scene = scene;
+    this.scene.add(mcMesh);
   }
 
   public updateScene() {
