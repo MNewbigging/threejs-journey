@@ -25,6 +25,10 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /\.glsl$/,
+        loader: 'webpack-glsl-loader',
+      },
+      {
         test: /\.tsx?$/,
         loader: 'ts-loader',
       },

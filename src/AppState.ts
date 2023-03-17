@@ -45,7 +45,7 @@ export class AppState {
     this.renderer = new Renderer(this.canvasListener);
 
     // Load initial scene
-    this.selectScene(SceneName.BASIC_TEXTURE);
+    this.selectScene(SceneName.SHADERS);
 
     // Start render loop
     this.update();

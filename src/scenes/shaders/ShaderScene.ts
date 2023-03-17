@@ -1,12 +1,15 @@
 import * as THREE from 'three';
-import { Camera, MeshBasicMaterial } from 'three';
+import { BufferAttribute, Camera, MeshBasicMaterial } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { BaseScene } from '../BaseScene';
+import vertexShader from './simple/vertex.glsl';
+import fragmentShader from './simple/fragment.glsl';
 
 export class ShaderScene extends BaseScene {
   private _camera: THREE.PerspectiveCamera;
   private controls: OrbitControls;
   private meshes: THREE.Mesh[] = [];
+  private planeMat: THREE.RawShaderMaterial;
 
   public get camera(): Camera {
     return this._camera;
@@ -22,23 +25,45 @@ export class ShaderScene extends BaseScene {
       0.1,
       1000
     );
-    camera.position.x = 2;
-    camera.position.y = 2;
+    camera.position.x = 0;
+    camera.position.y = 0;
     camera.position.z = 2;
     this._camera = camera;
     this.controls = new OrbitControls(this.camera, this.canvasListener.canvas);
     this.controls.enableDamping = true;
 
     // Objects
-    const planeGeom = new THREE.PlaneGeometry();
-    const planeMat = this.getShaderMaterial();
+    const planeGeom = new THREE.PlaneBufferGeometry(3, 1, 100, 100);
+
+    // Pass random values as new geom attr
+    const vertices = planeGeom.attributes.position.count;
+    const randoms = new Float32Array(vertices);
+    for (let i = 0; i < vertices; i++) {
+      randoms[i] = Math.random();
+    }
+    planeGeom.setAttribute('aRandom', new BufferAttribute(randoms, 1));
+
+    const planeMat = new THREE.RawShaderMaterial({
+      vertexShader,
+      fragmentShader,
+      uniforms: {
+        uFrequency: { value: new THREE.Vector2(10, 5.0) },
+        uTime: { value: 0 },
+        uColor: { value: new THREE.Color('orange') },
+      },
+    });
+
     const mesh = new THREE.Mesh(planeGeom, planeMat);
     this.meshes.push(mesh);
     this.scene.add(mesh);
+
+    this.planeMat = planeMat;
   }
 
   public updateScene(deltaTime: number): void {
     this.controls.update();
+
+    this.planeMat.uniforms.uTime.value += deltaTime;
   }
 
   public destroyScene(): void {
@@ -50,26 +75,9 @@ export class ShaderScene extends BaseScene {
 
   private getShaderMaterial() {
     return new THREE.RawShaderMaterial({
-      vertexShader: `
-        uniform mat4 projectionMatrix;
-        uniform mat4 viewMatrix;
-        uniform mat4 modelMatrix;
-
-        attribute vec3 position;
-
-        void main() 
-        {
-          gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(position, 1.0);
-        }
-      `,
-      fragmentShader: `
-        precision mediump float;
-
-        void main() 
-        {
-          gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
-        }
-      `,
+      vertexShader,
+      fragmentShader,
+      transparent: true,
     });
   }
 }

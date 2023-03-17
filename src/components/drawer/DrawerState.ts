@@ -7,7 +7,7 @@ export enum DrawerStage {
 }
 
 export class DrawerState {
-  public stage = DrawerStage.OPEN;
+  public stage = DrawerStage.CLOSED;
   public dialogState = new DialogState();
 
   constructor() {
