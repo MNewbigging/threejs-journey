@@ -7,6 +7,7 @@ export enum SceneName {
   MATERIALS = 'Materials',
   TEXT = 'Text',
   CANNON_PHYSICS = 'CannonJs Physics',
+  SHADERS = 'Shaders',
 }
 
 export const sceneNames = Object.values(SceneName);

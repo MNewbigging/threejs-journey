@@ -14,9 +14,10 @@ import { MaterialsScene } from './scenes/materials/MaterialsScene';
 import { StandardOrbitCamScene } from './scenes/standard-orbit-cam/StandardOrbitCamScene';
 import { TextScene } from './scenes/text/TextScene';
 import { CannonPhysicsScene } from './scenes/cannon-physics/CannonPhysicsScene';
+import { ShaderScene } from './scenes/shaders/ShaderScene';
 
 export class AppState {
-  public activeSceneName = SceneName.BASIC_TRANSFORMS;
+  public activeSceneName = SceneName.SHADERS;
   public drawerState = new DrawerState();
 
   private canvasListener: CanvasListener;
@@ -89,6 +90,9 @@ export class AppState {
         break;
       case SceneName.CANNON_PHYSICS:
         this.activeScene = new CannonPhysicsScene(this.canvasListener);
+        break;
+      case SceneName.SHADERS:
+        this.activeScene = new ShaderScene(this.canvasListener);
         break;
     }
 
