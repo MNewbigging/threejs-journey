@@ -1,13 +1,12 @@
 import * as THREE from 'three';
 import * as dat from 'dat.gui';
 import { Camera, RawShaderMaterial } from 'three';
+import { GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 import flag from '../../assets/flag.png';
 import flagFragment from './flag/fragment.glsl';
 import flagVertex from './flag/vertex.glsl';
-import patternFragment from './pattern/fragment.glsl';
-import patternVertex from './pattern/vertex.glsl';
 import seaFragment from './sea/fragment.glsl';
 import seaVertex from './sea/vertex.glsl';
 import { BaseScene } from '../BaseScene';
@@ -29,115 +28,18 @@ export class ShaderScene extends BaseScene {
 
   public initScene(): void {
     this.scene = new THREE.Scene();
-    //this.scene.background = new THREE.Color('#1680AF');
+    this.scene.background = new THREE.Color('#1680AF');
 
     // Setup camera
     this.setupCamera();
 
     // Objects
-    const planeGeom = new THREE.PlaneBufferGeometry(2, 2, 512, 512);
-    const planeMat = new THREE.ShaderMaterial({
-      vertexShader: seaVertex,
-      fragmentShader: seaFragment,
-      side: THREE.DoubleSide,
-      uniforms: {
-        uTime: { value: 0.0 },
+    this.setupSea();
 
-        uBigWavesElevation: { value: 0.1 },
-        uBigWavesFrequency: { value: new THREE.Vector2(2, 4) },
-        uBigWavesSpeed: { value: 0.4 },
+    const loader = new GLTFLoader();
+    loader.load('assets/models/ship_dark.gltf', this.setupShip);
 
-        uSmallWavesElevation: { value: 0.1 },
-        uSmallWavesFrequency: { value: 2.5 },
-        uSmallWavesSpeed: { value: 0.2 },
-        uSmallWavesIterations: { value: 2.0 },
-
-        uDepthColor: { value: new THREE.Color(this.debugObject.depthColor) },
-        uSurfaceColor: { value: new THREE.Color(this.debugObject.surfaceColor) },
-        uColorOffset: { value: 0.08 },
-        uColorMultiplier: { value: 5.0 },
-      },
-    });
-    this.planeMat = planeMat;
-
-    const plane = new THREE.Mesh(planeGeom, planeMat);
-    plane.rotation.x = -Math.PI * 0.5;
-
-    this.gui
-      .add(planeMat.uniforms.uBigWavesElevation, 'value')
-      .min(0)
-      .max(1)
-      .step(0.001)
-      .name('uBigWavesElevation');
-    this.gui
-      .add(planeMat.uniforms.uBigWavesFrequency.value, 'x')
-      .min(0)
-      .max(10)
-      .step(0.001)
-      .name('uBigWavesFrequencyX');
-    this.gui
-      .add(planeMat.uniforms.uBigWavesFrequency.value, 'y')
-      .min(0)
-      .max(30)
-      .step(0.001)
-      .name('uBigWavesFrequencyY');
-    this.gui
-      .add(planeMat.uniforms.uBigWavesSpeed, 'value')
-      .min(0)
-      .max(4)
-      .step(0.001)
-      .name('uBigWavesSpeed');
-
-    this.gui
-      .add(planeMat.uniforms.uSmallWavesElevation, 'value')
-      .min(0)
-      .max(1)
-      .step(0.001)
-      .name('uSmallWavesElevation');
-    this.gui
-      .add(planeMat.uniforms.uSmallWavesFrequency, 'value')
-      .min(0)
-      .max(30)
-      .step(0.001)
-      .name('uSmallWavesFrequency');
-    this.gui
-      .add(planeMat.uniforms.uSmallWavesSpeed, 'value')
-      .min(0)
-      .max(5)
-      .step(0.001)
-      .name('uSmallWavesSpeed');
-    this.gui
-      .add(planeMat.uniforms.uSmallWavesIterations, 'value')
-      .min(0)
-      .max(5)
-      .step(1)
-      .name('uSmallWavesIterations');
-
-    this.gui
-      .addColor(this.debugObject, 'depthColor')
-      .name('depthColor')
-      .onChange(() => this.planeMat.uniforms.uDepthColor.value.set(this.debugObject.depthColor));
-    this.gui
-      .addColor(this.debugObject, 'surfaceColor')
-      .name('surfaceColor')
-      .onChange(() =>
-        this.planeMat.uniforms.uSurfaceColor.value.set(this.debugObject.surfaceColor)
-      );
-    this.gui
-      .add(planeMat.uniforms.uColorOffset, 'value')
-      .min(0)
-      .max(1)
-      .step(0.001)
-      .name('uColorOffset');
-    this.gui
-      .add(planeMat.uniforms.uColorMultiplier, 'value')
-      .min(0)
-      .max(10)
-      .step(0.001)
-      .name('uColorMultiplier');
-
-    this.meshes.push(plane);
-    this.scene.add(plane);
+    this.setupDebugUi();
   }
 
   public updateScene(deltaTime: number): void {
@@ -166,6 +68,129 @@ export class ShaderScene extends BaseScene {
     this._camera = camera;
     this.controls = new OrbitControls(this.camera, this.canvasListener.canvas);
     this.controls.enableDamping = true;
+  }
+
+  private setupSea() {
+    const planeGeom = new THREE.PlaneBufferGeometry(8, 8, 512, 512);
+    const planeMat = new THREE.ShaderMaterial({
+      vertexShader: seaVertex,
+      fragmentShader: seaFragment,
+      side: THREE.DoubleSide,
+      uniforms: {
+        uTime: { value: 0.0 },
+
+        uBigWavesElevation: { value: 0.1 },
+        uBigWavesFrequency: { value: new THREE.Vector2(1, 2) },
+        uBigWavesSpeed: { value: 0.5 },
+
+        uSmallWavesElevation: { value: 0.1 },
+        uSmallWavesFrequency: { value: 1.5 },
+        uSmallWavesSpeed: { value: 0.25 },
+        uSmallWavesIterations: { value: 2.0 },
+
+        uDepthColor: { value: new THREE.Color(this.debugObject.depthColor) },
+        uSurfaceColor: { value: new THREE.Color(this.debugObject.surfaceColor) },
+        uColorOffset: { value: 0.08 },
+        uColorMultiplier: { value: 5.0 },
+      },
+    });
+    this.planeMat = planeMat;
+
+    const plane = new THREE.Mesh(planeGeom, planeMat);
+    plane.rotation.x = -Math.PI * 0.5;
+
+    this.meshes.push(plane);
+    this.scene.add(plane);
+  }
+
+  private setupShip = (gltf: GLTF) => {
+    console.log('loaded ship');
+
+    gltf.scene.traverse((node) => {
+      const meshNode = node as THREE.Mesh;
+      if (meshNode.isMesh) {
+        (meshNode.material as THREE.MeshStandardMaterial).metalness = 0;
+        meshNode.castShadow = true;
+        meshNode.receiveShadow = true;
+      }
+    });
+
+    this.scene.add(gltf.scene);
+  };
+
+  private setupDebugUi() {
+    this.gui
+      .add(this.planeMat.uniforms.uBigWavesElevation, 'value')
+      .min(0)
+      .max(1)
+      .step(0.001)
+      .name('uBigWavesElevation');
+    this.gui
+      .add(this.planeMat.uniforms.uBigWavesFrequency.value, 'x')
+      .min(0)
+      .max(10)
+      .step(0.001)
+      .name('uBigWavesFrequencyX');
+    this.gui
+      .add(this.planeMat.uniforms.uBigWavesFrequency.value, 'y')
+      .min(0)
+      .max(30)
+      .step(0.001)
+      .name('uBigWavesFrequencyY');
+    this.gui
+      .add(this.planeMat.uniforms.uBigWavesSpeed, 'value')
+      .min(0)
+      .max(4)
+      .step(0.001)
+      .name('uBigWavesSpeed');
+
+    this.gui
+      .add(this.planeMat.uniforms.uSmallWavesElevation, 'value')
+      .min(0)
+      .max(1)
+      .step(0.001)
+      .name('uSmallWavesElevation');
+    this.gui
+      .add(this.planeMat.uniforms.uSmallWavesFrequency, 'value')
+      .min(0)
+      .max(30)
+      .step(0.001)
+      .name('uSmallWavesFrequency');
+    this.gui
+      .add(this.planeMat.uniforms.uSmallWavesSpeed, 'value')
+      .min(0)
+      .max(5)
+      .step(0.001)
+      .name('uSmallWavesSpeed');
+    this.gui
+      .add(this.planeMat.uniforms.uSmallWavesIterations, 'value')
+      .min(0)
+      .max(5)
+      .step(1)
+      .name('uSmallWavesIterations');
+
+    this.gui
+      .addColor(this.debugObject, 'depthColor')
+      .name('depthColor')
+      .onChange(() => this.planeMat.uniforms.uDepthColor.value.set(this.debugObject.depthColor));
+    this.gui
+      .addColor(this.debugObject, 'surfaceColor')
+      .name('surfaceColor')
+      .onChange(() =>
+        this.planeMat.uniforms.uSurfaceColor.value.set(this.debugObject.surfaceColor)
+      );
+    this.gui
+      .add(this.planeMat.uniforms.uColorOffset, 'value')
+      .min(0)
+      .max(1)
+      .step(0.001)
+      .name('uColorOffset');
+    this.gui
+      .add(this.planeMat.uniforms.uColorMultiplier, 'value')
+      .min(0)
+      .max(10)
+      .step(0.001)
+      .name('uColorMultiplier');
   }
 
   private setupFlag() {
