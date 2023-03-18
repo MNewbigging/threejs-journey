@@ -1,10 +1,17 @@
-uniform mat4 projectionMatrix;
-uniform mat4 viewMatrix;
-uniform mat4 modelMatrix;
-
-attribute vec3 position;
+uniform float uTime;
+uniform float uBigWavesElevation;
+uniform vec2 uBigWavesFrequency;
+uniform float uBigWavesSpeed;
 
 void main()
 {
-  gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(position, 1.0);
+  vec4 modelPosition = modelMatrix * vec4(position, 1.0);
+
+  float elavation = sin(modelPosition.x * uBigWavesFrequency.x + uTime * uBigWavesSpeed) *
+                    sin(modelPosition.z * uBigWavesFrequency.y + uTime * uBigWavesSpeed) * 
+                    uBigWavesElevation;
+
+  modelPosition.y += elavation;
+
+  gl_Position = projectionMatrix * viewMatrix * modelPosition;
 }

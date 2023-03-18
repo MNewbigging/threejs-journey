@@ -23,7 +23,7 @@ export class ShaderScene extends BaseScene {
 
   public initScene(): void {
     this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color('#1680AF');
+    //this.scene.background = new THREE.Color('#1680AF');
 
     // Setup camera
     const camera = new THREE.PerspectiveCamera(
@@ -41,12 +41,15 @@ export class ShaderScene extends BaseScene {
 
     // Objects
     const planeGeom = new THREE.PlaneBufferGeometry(2, 2, 128, 128);
-    const planeMat = new THREE.RawShaderMaterial({
+    const planeMat = new THREE.ShaderMaterial({
       vertexShader: seaVertex,
       fragmentShader: seaFragment,
       side: THREE.DoubleSide,
       uniforms: {
-        uTime: { value: 0 },
+        uTime: { value: 0.0 },
+        uBigWavesElevation: { value: 0.2 },
+        uBigWavesFrequency: { value: new THREE.Vector2(4, 1.5) },
+        uBigWavesSpeed: { value: 0.4 },
       },
     });
     this.planeMat = planeMat;
@@ -61,9 +64,7 @@ export class ShaderScene extends BaseScene {
   public updateScene(deltaTime: number): void {
     this.controls.update();
 
-    if (this.planeMat) {
-      this.planeMat.uniforms.uTime.value += deltaTime * 5.0;
-    }
+    this.planeMat.uniforms.uTime.value += deltaTime;
   }
 
   public destroyScene(): void {
