@@ -1,9 +1,15 @@
 import * as THREE from 'three';
-import { BufferAttribute, Camera, MeshBasicMaterial } from 'three';
+import { Camera, RawShaderMaterial } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+
+import flag from '../../assets/flag.png';
+import flagFragment from './flag/fragment.glsl';
+import flagVertex from './flag/vertex.glsl';
+import patternFragment from './pattern/fragment.glsl';
+import patternVertex from './pattern/vertex.glsl';
+import seaFragment from './sea/fragment.glsl';
+import seaVertex from './sea/vertex.glsl';
 import { BaseScene } from '../BaseScene';
-import vertexShader from './simple/vertex.glsl';
-import fragmentShader from './simple/fragment.glsl';
 
 export class ShaderScene extends BaseScene {
   private _camera: THREE.PerspectiveCamera;
@@ -17,6 +23,7 @@ export class ShaderScene extends BaseScene {
 
   public initScene(): void {
     this.scene = new THREE.Scene();
+    this.scene.background = new THREE.Color('#1680AF');
 
     // Setup camera
     const camera = new THREE.PerspectiveCamera(
@@ -26,58 +33,67 @@ export class ShaderScene extends BaseScene {
       1000
     );
     camera.position.x = 0;
-    camera.position.y = 0;
+    camera.position.y = 2;
     camera.position.z = 2;
     this._camera = camera;
     this.controls = new OrbitControls(this.camera, this.canvasListener.canvas);
     this.controls.enableDamping = true;
 
     // Objects
-    const planeGeom = new THREE.PlaneBufferGeometry(3, 1, 100, 100);
-
-    // Pass random values as new geom attr
-    const vertices = planeGeom.attributes.position.count;
-    const randoms = new Float32Array(vertices);
-    for (let i = 0; i < vertices; i++) {
-      randoms[i] = Math.random();
-    }
-    planeGeom.setAttribute('aRandom', new BufferAttribute(randoms, 1));
-
+    const planeGeom = new THREE.PlaneBufferGeometry(2, 2, 128, 128);
     const planeMat = new THREE.RawShaderMaterial({
-      vertexShader,
-      fragmentShader,
+      vertexShader: seaVertex,
+      fragmentShader: seaFragment,
+      side: THREE.DoubleSide,
       uniforms: {
-        uFrequency: { value: new THREE.Vector2(10, 5.0) },
         uTime: { value: 0 },
-        uColor: { value: new THREE.Color('orange') },
       },
     });
-
-    const mesh = new THREE.Mesh(planeGeom, planeMat);
-    this.meshes.push(mesh);
-    this.scene.add(mesh);
-
     this.planeMat = planeMat;
+
+    const plane = new THREE.Mesh(planeGeom, planeMat);
+    plane.rotation.x = -Math.PI * 0.5;
+
+    this.meshes.push(plane);
+    this.scene.add(plane);
   }
 
   public updateScene(deltaTime: number): void {
     this.controls.update();
 
-    this.planeMat.uniforms.uTime.value += deltaTime;
+    if (this.planeMat) {
+      this.planeMat.uniforms.uTime.value += deltaTime * 5.0;
+    }
   }
 
   public destroyScene(): void {
     this.meshes.forEach((m) => {
       m.geometry.dispose();
-      (m.material as MeshBasicMaterial).dispose();
+      (m.material as RawShaderMaterial).dispose();
     });
   }
 
-  private getShaderMaterial() {
-    return new THREE.RawShaderMaterial({
-      vertexShader,
-      fragmentShader,
-      transparent: true,
+  private setupFlag() {
+    const flagGeom = new THREE.PlaneBufferGeometry(1, 1, 128, 128);
+    flagGeom.scale(1.6, 1, 1);
+
+    const textureLoader = new THREE.TextureLoader();
+    const texture = textureLoader.load(flag);
+
+    const planeMat = new THREE.RawShaderMaterial({
+      vertexShader: flagVertex,
+      fragmentShader: flagFragment,
+      side: THREE.DoubleSide,
+      uniforms: {
+        uTime: { value: 0 },
+        uTexture: { value: texture },
+      },
     });
+
+    const mesh = new THREE.Mesh(flagGeom, planeMat);
+    this.meshes.push(mesh);
+    this.scene.add(mesh);
+
+    this.planeMat = planeMat;
   }
 }
